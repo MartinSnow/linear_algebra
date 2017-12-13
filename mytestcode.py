@@ -4,6 +4,9 @@
 from decimal import *
 from helper import *
 from fractions import Fraction
+
+
+
 # 1 矩阵运算
 
 A = [[2,1,2],
@@ -110,11 +113,12 @@ def addScaledRow(M, r1, r2, scale):
         raise ValueError("scale is 0")
 
 
-A = generateMatrix(3,5,singular=False)
-b = np.ones(shape=(3,1),dtype=int) # it doesn't matter
+A = generateMatrix(4,5,singular=False)
+b = np.ones(shape=(4,1),dtype=int) # it doesn't matter
 Ab = augmentMatrix(A.tolist(),b.tolist()) # 请确保你的增广矩阵已经写好了
-printInMatrixFormat(Ab,padding=3,truncating=0)
+#printInMatrixFormat(Ab,padding=3,truncating=0)
 #print Ab
+
 
 
 def trans_to_fraction(M):
@@ -126,7 +130,7 @@ def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
     if len(A) != len(b):    #如果 A，b 高度不同，返回None
         return None
     M = augmentMatrix(A.tolist(),b.tolist())
-    print M
+    #print M
     for i in range(len(M[0])-1):    #取第i列
         #print 'i:',i
         value_list = [0]*(len(M)-i)
@@ -145,7 +149,7 @@ def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
                     #print '第i行:',M[i]
                     swapRows(M, i, r+i)    #绝对值最大值所在行与i行交换
                     #print '交换后的第i行:',M[i]
-                    scaleRow(M, i, Fraction(1, M[i][i]))     #1.0/M[i][i] 第i行对角线值变为1
+                    scaleRow(M, i, 1.0/M[i][i])     #1.0/M[i][i] 第i行对角线值变为1
                     #print '对角线值为1的第i行',M[i]
                     for l in range(len(M)):    #第i列除对角线值外的元素变为0
                         if l != i:
@@ -155,7 +159,7 @@ def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
                             #print '第i列第l个值为0的l行:',M[l]
                         else:
                             continue
-                    print M    #每一列循环后的M
+                    #print M    #每一列循环后的M
                     break    #退出r的循环
     '''for i in range(len(M))[::-1]:    #从最后一行开始循环
         #print 'i',i
@@ -163,33 +167,20 @@ def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
             #print 'j',j
             addScaledRow(M, j, i, -M[j][i])    #第i列的第j个值变为0
             #print '第i列的第j个值变为0的第j行',M[j]'''
+    print M
     x = [0]*len(b)
     for i in range(len(M)):
-        x[i] = M[i][len(M[0])-1]
+        x[i] = round(Decimal(M[i][-1]),decPts)
         
     return x
                     
 
-print gj_Solve(A, b, decPts=4, epsilon = 1.0e-16)
-#print Ab
-
-[[Fraction(1, 1), Fraction(-4, 7), Fraction(-5, 7), Fraction(-1, 7)],
- [Fraction(0, 1), Fraction(26, 7), Fraction(-27, 7), Fraction(3, 7)],
- [Fraction(0, 1), Fraction(-50, 7), Fraction(-31, 7), Fraction(5, 7)]]
-
-[[Fraction(1, 1), Fraction(0, 1), Fraction(-9, 25), Fraction(-1, 5)],
- [Fraction(0, 1), Fraction(1, 1), Fraction(31, 50), Fraction(-1, 10)],
- [Fraction(0, 1), Fraction(0, 1), Fraction(-154, 25), Fraction(4, 5)]]
-
-[[Fraction(1, 1), Fraction(0, 1), Fraction(0, 1), Fraction(-19, 77)],
- [Fraction(0, 1), Fraction(1, 1), Fraction(0, 1), Fraction(-3, 154)],
- [Fraction(0, 1), Fraction(0, 1), Fraction(1, 1), Fraction(-10, 77)]]
+# print gj_Solve(A, b, decPts=4, epsilon = 1.0e-16)
 
 
 
 
-
-
+print 3**3
 
 
 
