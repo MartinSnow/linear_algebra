@@ -27,7 +27,7 @@ seed = 5
 
 
 # 本项目要求矩阵统一使用二维列表表示，如下：
-A = [[1,2,3], 
+A1 = [[1,2,3], 
      [2,3,3], 
      [1,2,5]]
 
@@ -278,24 +278,7 @@ get_ipython().magic(u'run -i -e test.py LinearRegressionTestCase.test_addScaledR
 # In[19]:
 
 
-# 不要修改这里！
 from helper import *
-A = generateMatrix(3,seed,singular=False)
-b = np.ones(shape=(3,1),dtype=int) # it doesn't matter
-Ab = augmentMatrix(A.tolist(),b.tolist()) # 请确保你的增广矩阵已经写好了
-printInMatrixFormat(Ab,padding=3,truncating=0)
-
-
-# $Ab = \left\lgroup \matrix{-7 & 4 & 5 & 1\cr -4 & 6 & -1&1\cr -2&-6&-3&1\cr} \right\rgroup\\
-# -->\left\lgroup \matrix{1 & \frac{-4}{7} & \frac{-5}{7} & \frac{-1}{7}\cr 0 & \frac{26}{7} & \frac{-27}{7}&\frac{3}{7}\cr 0&\frac{-50}{7}&\frac{-31}{7}&\frac{5}{7}\cr} \right\rgroup\\
-# -->\left\lgroup \matrix{1 & 0 & \frac{-9}{25} & \frac{-1}{5}\cr 0 & 1 & \frac{31}{50}&\frac{-1}{10}\cr 0&0&\frac{-154}{25}&\frac{4}{5}\cr} \right\rgroup\\
-# -->\left\lgroup \matrix{1 & 0 & 0 & \frac{-19}{77}\cr 0 & 1 & 0&\frac{-3}{154}\cr 0&0&1&\frac{-10}{77}\cr} \right\rgroup
-# $
-# 
-
-# In[20]:
-
-
 # 不要修改这里！
 A = generateMatrix(3,seed,singular=True)
 b = np.ones(shape=(3,1),dtype=int)
@@ -309,9 +292,27 @@ printInMatrixFormat(Ab,padding=3,truncating=0)
 # -->\left\lgroup \matrix{1 & 0 & \frac{17}{19} & 0\cr 0 & 1 & \frac{-14}{19}&0\cr 0&0&0&1\cr} \right\rgroup
 # $
 
+# In[20]:
+
+
+from helper import *
+# 不要修改这里！
+A = generateMatrix(3,seed,singular=False)
+b = np.ones(shape=(3,1),dtype=int) # it doesn't matter
+Ab = augmentMatrix(A.tolist(),b.tolist()) # 请确保你的增广矩阵已经写好了
+printInMatrixFormat(Ab,padding=3,truncating=0)
+
+
+# $Ab = \left\lgroup \matrix{-7 & 4 & 5 & 1\cr -4 & 6 & -1&1\cr -2&-6&-3&1\cr} \right\rgroup\\
+# -->\left\lgroup \matrix{1 & \frac{-4}{7} & \frac{-5}{7} & \frac{-1}{7}\cr 0 & \frac{26}{7} & \frac{-27}{7}&\frac{3}{7}\cr 0&\frac{-50}{7}&\frac{-31}{7}&\frac{5}{7}\cr} \right\rgroup\\
+# -->\left\lgroup \matrix{1 & 0 & \frac{-9}{25} & \frac{-1}{5}\cr 0 & 1 & \frac{31}{50}&\frac{-1}{10}\cr 0&0&\frac{-154}{25}&\frac{4}{5}\cr} \right\rgroup\\
+# -->\left\lgroup \matrix{1 & 0 & 0 & \frac{-19}{77}\cr 0 & 1 & 0&\frac{-3}{154}\cr 0&0&1&\frac{-10}{77}\cr} \right\rgroup
+# $
+# 
+
 # ### 2.3.3 实现 Gaussian Jordan 消元法
 
-# In[20]:
+# In[21]:
 
 
 # TODO 实现 Gaussain Jordan 方法求解 Ax = b
@@ -356,7 +357,9 @@ def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
                         if l != i:
                             #print '第l行:',l
                             #print "第l行",M[l]
-                            print M[l][i]
+                            #print M[l][i]
+                            if abs(M[l][i]) <= epsilon:    #M[l][i]值为0
+                                continue
                             addScaledRow(M, l, i, -M[l][i])    #第i列第l个值变为0
                             #print '第i列第l个值为0的l行:',M[l]
                         else:
@@ -369,10 +372,10 @@ def gj_Solve(A, b, decPts=4, epsilon=1.0e-16):
     matxRound([x], decPts=4)
         
     return transpose([x])
-gj_Solve(A, b, decPts=4, epsilon=1.0e-16)
+#gj_Solve(A, b, decPts=4, epsilon=1.0e-16)
 
 
-# In[25]:
+# In[22]:
 
 
 # 运行以下代码测试你的 gj_Solve 函数
@@ -417,7 +420,7 @@ get_ipython().magic(u'run -i -e test.py LinearRegressionTestCase.test_gj_Solve')
 # 
 # ## 3.1 随机生成样本点
 
-# In[26]:
+# In[23]:
 
 
 
@@ -441,7 +444,7 @@ plt.show()
 # 
 # ### 3.2.1 猜测一条直线
 
-# In[27]:
+# In[24]:
 
 
 #TODO 请选择最适合的直线 y = mx + b
@@ -468,7 +471,7 @@ plt.show()
 # MSE = \frac{1}{n}\sum_{i=1}^{n}{(y_i - mx_i - b)^2}
 # $$
 
-# In[28]:
+# In[25]:
 
 
 # TODO 实现以下函数并输出所选直线的MSE
@@ -544,7 +547,7 @@ print(calculateMSE(X,Y,m1,b1))
 # ##  3.4 求解 $X^TXh = X^TY$
 # ### 在3.3 中，我们知道线性回归问题等价于求解 $X^TXh = X^TY$ (如果你选择不做3.3，就勇敢的相信吧，哈哈)
 
-# In[29]:
+# In[26]:
 
 
 # TODO 实现线性回归
@@ -573,7 +576,7 @@ assert isinstance(b2,float),"b is not a float"
 print(m2,b2)
 
 
-# In[30]:
+# In[27]:
 
 
 # 请不要修改下面的代码
@@ -589,7 +592,7 @@ plt.title('y = {m:.4f}x + {b:.4f}'.format(m=m2,b=b2))
 plt.show()
 
 
-# In[31]:
+# In[28]:
 
 
 print(calculateMSE(X,Y,m2,b2))
